@@ -1,0 +1,16 @@
+//
+//  ReadLine.swift
+//  ServerTracker
+//
+//  Created by GreenyCells (Mineturtlee) on 19/6/26.
+//
+
+func readUserInput() -> String {
+    while true {
+        if let line = readLine() {
+            return line
+        } else {
+            print("kaput, try again!", terminator: " ")
+        }
+    }
+}
