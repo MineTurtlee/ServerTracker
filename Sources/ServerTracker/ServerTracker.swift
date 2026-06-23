@@ -22,21 +22,23 @@ struct ServerTracker: ParsableCommand {
         while true {
             print("Bot token:", terminator: " ")
             let token = readUserInput()
-            let semaphore = DispatchSemaphore(value: 0)
             let conf = URLSessionConfiguration.default
             conf.urlCache = .none
             conf.httpAdditionalHeaders = ["User-Agent": "DiscordBot (https://discordpy.rtfd.io, v0.1)", "Authorization": "Bot \(token)"]
-            let resp = URLSession(configuration: conf).dataTask(with: disURL)
-            resp.resume()
-            if resp.error != nil {
-                print("Improper token passed or no internet connectivity: \(String(describing: resp.error?.localizedDescription)), try again?")
-                continue
+            let resp = URLSession(configuration: conf)
+            var fucked = false
+            resp.dataTask(with: disURL) { req, res, error in
+                if error != nil {
+                    print("Improper token passed or no internet connectivity: \(String(describing: error?.localizedDescription)), try again?")
+                    fucked = true
+                }
+                
+                if res is HTTPURLResponse {} else {
+                    print("Not an HTTP response: \(String(describing: resp))")
+                    fucked = true
+                }
             }
-            
-            if resp.response is HTTPURLResponse {} else {
-                print("Not an HTTP response: \(String(describing: resp.response))")
-                continue
-            }
+            if fucked == true { continue }
             tok = token
             break
         }
