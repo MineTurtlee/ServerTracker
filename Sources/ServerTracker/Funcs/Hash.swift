@@ -19,7 +19,7 @@ func enc(_ str: String, withPassword password: String) -> String {
     
     do {
         let box = try AES.GCM.seal(str.data(using: .utf8)!, using: key)
-        guard let combined = box.combined else {
+        guard box.combined != nil else {
             return ""
         }
         // Dear me, please SYBAU :sob:

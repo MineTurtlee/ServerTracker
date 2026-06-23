@@ -8,7 +8,7 @@ import Logging
 import ArgumentParser
 
 fileprivate let logger = Logger(label: "ServerTracker-Entrypoint")
-let disURL = URL(string: "https://discord.com/api/@me")!
+let disURL = URL(string: "https://discord.com/api/users/@me")!
 
 @main
 struct ServerTracker: ParsableCommand {
@@ -22,22 +22,23 @@ struct ServerTracker: ParsableCommand {
         while true {
             print("Bot token:", terminator: " ")
             let token = readUserInput()
-            var conf = URLSessionConfiguration.default
+            let semaphore = DispatchSemaphore(value: 0)
+            let conf = URLSessionConfiguration.default
             conf.urlCache = .none
-            conf.httpAdditionalHeaders = ["User-Agent": "DiscordBot", "Authorization": "Bot \(token)"]
-            let ses = URLSession(configuration: conf)
-            var resp = ses.dataTask(with: disURL)
-            if let error = resp.error {
-                print("Improper token passed or no internet connectivity: \(error.localizedDescription), try again?")
+            conf.httpAdditionalHeaders = ["User-Agent": "DiscordBot (https://discordpy.rtfd.io, v0.1)", "Authorization": "Bot \(token)"]
+            let resp = URLSession(configuration: conf).dataTask(with: disURL)
+            resp.resume()
+            if resp.error != nil {
+                print("Improper token passed or no internet connectivity: \(String(describing: resp.error?.localizedDescription)), try again?")
                 continue
             }
             
-            let respy = resp.response as! HTTPURLResponse
-            if (respy.statusCode >= 400) {
-                print("Improper token passed")
+            if resp.response is HTTPURLResponse {} else {
+                print("Not an HTTP response: \(String(describing: resp.response))")
                 continue
             }
             tok = token
+            break
         }
         print("Prefix (This will not turn off slash commands):", terminator: " ")
         let prefix = readUserInput()
@@ -64,7 +65,7 @@ struct ServerTracker: ParsableCommand {
         }
         
         let file = FileManager.default.currentDirectoryPath as NSString
-        var path = URL(string: file.appendingPathComponent("config.json"))
+        let path = URL(string: file.appendingPathComponent("config.json"))
         
         var content: String
         do {
