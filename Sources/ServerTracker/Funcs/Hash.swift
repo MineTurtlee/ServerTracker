@@ -14,6 +14,7 @@ extension Data {
 
 // MARK: AES-GCM Encryption with SHA256 hashing of the password
 func enc(_ str: String, withPassword password: String) -> String {
+    let wispbyte: Wispbyte = Wispbyte()
     let keyData = SHA256.hash(data: password.data(using: .utf8)!)
     let key = SymmetricKey(data: keyData)
     

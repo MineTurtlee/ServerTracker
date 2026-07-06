@@ -10,8 +10,10 @@ import Discord
 
 class TrackerBot: DiscordClientDelegate {
     private var bot: DiscordClient!
+    var prefix: String
     
-    init(token: String) {
+    init(token: String, prefix command_prefix: String) {
+        prefix = command_prefix
         bot = DiscordClient(token: "Bot \(token)",
                             delegate: self,
                             configuration: [

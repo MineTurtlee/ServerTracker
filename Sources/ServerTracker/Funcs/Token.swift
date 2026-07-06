@@ -60,10 +60,5 @@ func getToken(tokez: String) -> Boxshit {
 }
 
 final class Boxshit: @unchecked Sendable {
-    private let lock = NSLock()
-    private var _value: (Bool, String) = (false, "nil")
-    var value: (Bool, String) {
-        get { lock.lock(); defer { lock.unlock() }; return _value }
-        set { lock.lock(); defer { lock.unlock() }; _value = newValue }
-    }
+    var value: (Bool, String) = (false, "Unknown error")
 }

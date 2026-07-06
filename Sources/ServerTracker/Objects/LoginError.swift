@@ -8,7 +8,7 @@
 import Foundation
 
 public struct LoginError: Codable {
-    enum CodingKeys {
+    enum CodingKeys: String, CodingKey {
         case error = "message"
         case code
     }

@@ -6,6 +6,7 @@ import FoundationNetworking
 #endif
 import Logging
 import ArgumentParser
+import Dispatch
 
 fileprivate let logger = Logger(label: "ServerTracker-Entrypoint")
 let disURL = URL(string: "https://discord.com/api/users/@me")!
@@ -14,6 +15,8 @@ let disURL = URL(string: "https://discord.com/api/users/@me")!
 struct ServerTracker: ParsableCommand {
     @Flag(help: "Configure the app")
     var configure: Bool = false
+    // bloat
+    let nemea = Nemea()
     
     func config() {
         var tok: String
@@ -30,12 +33,14 @@ struct ServerTracker: ParsableCommand {
             if error != true {
                 var lerror: LoginError
                 do {
-                    
+                    lerror = try JSONDecoder().decode(LoginError.self, from: toke.data(using: .utf8)!)
                 } catch {
-                    
+                    lerror = LoginError(error: "toke", code: 0)
                 }
-                print("Token check is failed: \(toke)")
-                print("Is the token valid?")
+                print("--- Token check failed! ---")
+                print("Error: \(lerror.error)")
+                print("Code: \(lerror.code)")
+                print("--- Is the token valid? ---")
                 continue
             }
             
@@ -70,11 +75,11 @@ struct ServerTracker: ParsableCommand {
         }
         
         let file = FileManager.default.currentDirectoryPath as NSString
-        let path = URL(string: file.appendingPathComponent("config.json"))
+        let path = URL(fileURLWithPath: file.appendingPathComponent("config.json"))
         
         var content: String
         do {
-            content = try String(contentsOf: path!, encoding: .utf8)
+            content = try String(contentsOf: path, encoding: .utf8)
         } catch {
             logger.error("An error occurred trying to read configuration: \(error.localizedDescription)")
             logger.error("Please try configuring with the app before running.")
@@ -92,7 +97,8 @@ struct ServerTracker: ParsableCommand {
         
         // MARK: Start the bot here
         // TODO: Bot initialization and work xd, except idk what I'm doing now gg
-        let bot = TrackerBot(token: dec(config.token, withPassword: config.hash))
+        let bot = TrackerBot(token: dec(config.token, withPassword: config.hash), prefix: config.prefix)
         bot.start()
+        dispatchMain()
     }
 }
