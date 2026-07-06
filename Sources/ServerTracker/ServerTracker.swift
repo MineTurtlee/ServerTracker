@@ -20,26 +20,26 @@ struct ServerTracker: ParsableCommand {
         print("Passcode for the hash:", terminator: " ")
         let hash = readUserInput()
         while true {
-            print("Bot token:", terminator: " ")
-            let token = readUserInput()
-            let conf = URLSessionConfiguration.default
-            conf.urlCache = .none
-            conf.httpAdditionalHeaders = ["User-Agent": "DiscordBot (https://discordpy.rtfd.io, v0.1)", "Authorization": "Bot \(token)"]
-            let resp = URLSession(configuration: conf)
-            var fucked = false
-            resp.dataTask(with: disURL) { req, res, error in
-                if error != nil {
-                    print("Improper token passed or no internet connectivity: \(String(describing: error?.localizedDescription)), try again?")
-                    fucked = true
+            print("Token:", terminator: " ")
+            let tokk = readUserInput()
+            var boxshit: Boxshit
+            
+            boxshit = getToken(tokez: tokk)
+            let (error, toke) = boxshit.value
+            
+            if error != true {
+                var lerror: LoginError
+                do {
+                    
+                } catch {
+                    
                 }
-                
-                if res is HTTPURLResponse {} else {
-                    print("Not an HTTP response: \(String(describing: resp))")
-                    fucked = true
-                }
+                print("Token check is failed: \(toke)")
+                print("Is the token valid?")
+                continue
             }
-            if fucked == true { continue }
-            tok = token
+            
+            tok = toke
             break
         }
         print("Prefix (This will not turn off slash commands):", terminator: " ")
@@ -48,10 +48,13 @@ struct ServerTracker: ParsableCommand {
         // WRITING ENTIRELY HERE WE AREEEEEE
         let config = Config(hash: hash, token: enc(tok, withPassword: hash), prefix: prefix)
         let file = FileManager.default.currentDirectoryPath as NSString
-        let path = URL(string: file.appendingPathComponent("config.json"))
+        let path = URL(fileURLWithPath: file.appendingPathComponent("config.json"))
         do {
+            print("--- DEBUG INFOOOOO ---")
+            print("PWD: \(file)")
+            print("Wanted path: \(path)")
             let encoder = try JSONEncoder().encode(config)
-            try encoder.write(to: path!, options: .atomic)
+            try encoder.write(to: path, options: .atomic)
         } catch {
             print("Failed to write file: \(error.localizedDescription)")
             return
