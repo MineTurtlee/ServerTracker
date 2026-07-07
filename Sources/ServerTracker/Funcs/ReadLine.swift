@@ -14,3 +14,8 @@ func readUserInput() -> String {
         }
     }
 }
+
+func input(_ quest: String) -> String {
+    print(quest, terminator: " ")
+    return readUserInput()
+}

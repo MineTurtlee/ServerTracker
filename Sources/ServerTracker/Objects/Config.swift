@@ -12,9 +12,11 @@ struct Config: Codable {
         case hash = "password"
         case token
         case prefix
+        case presences
     }
     
     var hash: String
     var token: String
     var prefix: String
+    var presences: [Presence]
 }

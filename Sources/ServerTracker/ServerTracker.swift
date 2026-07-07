@@ -1,5 +1,7 @@
 // The Swift Programming Language
 // https://docs.swift.org/swift-book
+
+// Any comments made in this project will NOT be deleted or removed in any way cuz yes
 import Foundation
 #if canImport(FoundationNetworking)
 import FoundationNetworking
@@ -16,7 +18,7 @@ struct ServerTracker: ParsableCommand {
     @Flag(help: "Configure the app")
     var configure: Bool = false
     // bloat
-    let nemea = Nemea()
+    var nemea = Nemea()
     
     func config() {
         var tok: String
@@ -50,8 +52,98 @@ struct ServerTracker: ParsableCommand {
         print("Prefix (This will not turn off slash commands):", terminator: " ")
         let prefix = readUserInput()
         
+        print("--- Basic Setup Done! ---")
+        print("Do you want to include any presences? [yN]", terminator: " ")
+        let presChoice = readUserInput()
+        // I love custom **structing**
+        var presList: [Presence] = []
+        if presChoice.lowercased().starts(with: "y") {
+            while true {
+                // ask for pres details here
+                // this code is leaked to viewers and early access but the codebase is public
+                // build it yourself to see development progress i guess lmfao
+                var title: String {
+                    input("Title of the presence:")
+                }
+                
+                var details: String {
+                    input("Description of the presence:")
+                }
+                
+                var state: String {
+                    input("Second line of the description:")
+                }
+                
+                print("--- Image setup ---")
+                var bigImage: Image {
+                    var key = input("Big image key:")
+                    var desc = input("Big image description:")
+                    return Image(key: key, description: desc)
+                }
+                
+                var smallImage: Image {
+                    var key = input("Small image key:")
+                    var desc = input("Small image description:")
+                    return Image(key: key, description: desc)
+                }
+                
+                print("--- Misc setup ---")
+                var start: String = input("Start time in seconds (will be added to runtime):")
+                var start_int: Int64 = Int64(start) ?? 0
+                
+                var end: String = input("End time in seconds (will also be added to runtime):")
+                var end_int: Int64 = Int64(end) ?? 0
+                
+                var party: Party {
+                    var current = input("Team size (0 to disable)")
+                    var max = input("Team size (0 to disable too)")
+                    return Party(current: Int(current) ?? 0, max: Int(max) ?? 0)
+                }
+                
+                print("--- All set! ---")
+                // summary here, ill brb for some sky pics xd
+                print("-- Summarized information of the presence you picked --")
+                print("Title: \(title)")
+                print("Details: \(details)")
+                print("State: \(state)")
+                print("-= Big Image =-")
+                print("Key: \(bigImage.key)")
+                print("Description: \(bigImage.description)")
+                print("-= Small Image =-")
+                print("Key: \(smallImage.key)")
+                print("Description: \(smallImage.description)")
+                print("-= Miscellaneous =-")
+                print("Start time: \(start_int)")
+                print("End time: \(end_int)")
+                
+                var confirm = input("Is this correct?\nYou can always modify it to your likings in the config.json [yN]")
+                if confirm.lowercased().starts(with: "y") {
+                    presList.append(Presence(enabled: true,
+                                             name: title,
+                                             details: details,
+                                             state: state,
+                                             large_image: bigImage,
+                                             small_image: smallImage,
+                                             start: start_int,
+                                             end: end_int,
+                                             party: party
+                                            )
+                    ) // brb
+                    print("Added to the queue to add later!")
+                    var more = input("Do you want to create another presence? [yN]")
+                    if more.lowercased().starts(with: "y") {
+                        // if you forget ill fade away
+                        // im asking y to let me stayy
+                        continue
+                    } else { break }
+                } else { continue }
+            }
+        } else {
+            presList.append(Presence())
+        }
+        
         // WRITING ENTIRELY HERE WE AREEEEEE
-        let config = Config(hash: hash, token: enc(tok, withPassword: hash), prefix: prefix)
+        let config = Config(hash: hash, token: enc(tok, withPassword: hash), prefix: prefix, presences: presList)
         let file = FileManager.default.currentDirectoryPath as NSString
         let path = URL(fileURLWithPath: file.appendingPathComponent("config.json"))
         do {
