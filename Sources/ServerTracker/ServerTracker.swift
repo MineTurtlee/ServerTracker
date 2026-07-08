@@ -133,10 +133,11 @@ struct ServerTracker: ParsableCommand {
         }
         
         // WRITING ENTIRELY HERE WE AREEEEEE
+        var config: Config
         if hash != "" {
-            let config = Config(hash: hash, token: enc(tok, withPassword: hash), prefix: prefix, presences: presList)
+            config = Config(hash: hash, token: enc(tok, withPassword: hash), prefix: prefix, presences: presList)
         } else {
-            let config = Config(hash: "", token: tok, prefix: prefix, presences: presList)
+            config = Config(hash: "", token: tok, prefix: prefix, presences: presList)
         }
         
         let file = FileManager.default.currentDirectoryPath as NSString
