@@ -8,7 +8,7 @@
 func readUserInput() -> String {
     while true {
         if let line = readLine() {
-            if line != "" { return line }
+            return line
         } else {
             print("kaput, try again!", terminator: " ")
         }

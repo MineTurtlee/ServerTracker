@@ -48,7 +48,7 @@ func token(token: String) async -> (Bool, String) {
 
 func getToken(tokez: String) -> Boxshit {
     let semaphore = DispatchSemaphore(value: 0)
-    var shit = Boxshit()
+    let shit = Boxshit()
     
     Task.detached {
         shit.value = await token(token: tokez)

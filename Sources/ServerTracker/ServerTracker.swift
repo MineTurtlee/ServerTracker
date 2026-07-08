@@ -11,7 +11,9 @@ import ArgumentParser
 import Dispatch
 
 fileprivate let logger = Logger(label: "ServerTracker-Entrypoint")
-let disURL = URL(string: "https://discord.com/api/users/@me")!
+let disURL = URL(string: "https://discord.com/api/users/@me")! // why the fuck do you need a ! after the url, is it an optional or what the fuck
+// phew ok you dont need that shit it was stupid asf
+// fuck it it broke at build time
 
 @main
 struct ServerTracker: ParsableCommand {
@@ -62,43 +64,31 @@ struct ServerTracker: ParsableCommand {
                 // ask for pres details here
                 // this code is leaked to viewers and early access but the codebase is public
                 // build it yourself to see development progress i guess lmfao
-                var title: String {
-                    input("Title of the presence:")
-                }
+                let title: String = input("Title of the presence:")
                 
-                var details: String {
-                    input("Description of the presence:")
-                }
+                let details: String = input("Description of the presence:")
                 
-                var state: String {
-                    input("Second line of the description:")
-                }
+                let state: String = input("Second line of the description:")
                 
                 print("--- Image setup ---")
-                var bigImage: Image {
-                    var key = input("Big image key:")
-                    var desc = input("Big image description:")
-                    return Image(key: key, description: desc)
-                }
+                var key = input("Big image key:")
+                var desc = input("Big image description:")
+                let bigImage: Image = Image(key: key, description: desc)
                 
-                var smallImage: Image {
-                    var key = input("Small image key:")
-                    var desc = input("Small image description:")
-                    return Image(key: key, description: desc)
-                }
+                key = input("Small image key:")
+                desc = input("Small image description:")
+                let smallImage: Image = Image(key: key, description: desc)
                 
                 print("--- Misc setup ---")
-                var start: String = input("Start time in seconds (will be added to runtime):")
-                var start_int: Int64 = Int64(start) ?? 0
+                let start: String = input("Start time in seconds (will be added to runtime):")
+                let start_int: Int64 = Int64(start) ?? 0
                 
-                var end: String = input("End time in seconds (will also be added to runtime):")
-                var end_int: Int64 = Int64(end) ?? 0
+                let end: String = input("End time in seconds (will also be added to runtime):")
+                let end_int: Int64 = Int64(end) ?? 0
                 
-                var party: Party {
-                    var current = input("Team size (0 to disable)")
-                    var max = input("Team size (0 to disable too)")
-                    return Party(current: Int(current) ?? 0, max: Int(max) ?? 0)
-                }
+                let current = input("Team size (0 to disable)")
+                let max = input("Team size (0 to disable too)")
+                let party: Party = Party(current: Int(current) ?? 0, max: Int(max) ?? 0)
                 
                 print("--- All set! ---")
                 // summary here, ill brb for some sky pics xd
@@ -116,7 +106,7 @@ struct ServerTracker: ParsableCommand {
                 print("Start time: \(start_int)")
                 print("End time: \(end_int)")
                 
-                var confirm = input("Is this correct?\nYou can always modify it to your likings in the config.json [yN]")
+                let confirm = input("Is this correct?\nYou can always modify it to your likings in the config.json [yN]")
                 if confirm.lowercased().starts(with: "y") {
                     presList.append(Presence(enabled: true,
                                              name: title,
@@ -130,7 +120,7 @@ struct ServerTracker: ParsableCommand {
                                             )
                     ) // brb
                     print("Added to the queue to add later!")
-                    var more = input("Do you want to create another presence? [yN]")
+                    let more = input("Do you want to create another presence? [yN]")
                     if more.lowercased().starts(with: "y") {
                         // if you forget ill fade away
                         // im asking y to let me stayy
@@ -143,7 +133,12 @@ struct ServerTracker: ParsableCommand {
         }
         
         // WRITING ENTIRELY HERE WE AREEEEEE
-        let config = Config(hash: hash, token: enc(tok, withPassword: hash), prefix: prefix, presences: presList)
+        if hash != "" {
+            let config = Config(hash: hash, token: enc(tok, withPassword: hash), prefix: prefix, presences: presList)
+        } else {
+            let config = Config(hash: "", token: tok, prefix: prefix, presences: presList)
+        }
+        
         let file = FileManager.default.currentDirectoryPath as NSString
         let path = URL(fileURLWithPath: file.appendingPathComponent("config.json"))
         do {
@@ -189,7 +184,14 @@ struct ServerTracker: ParsableCommand {
         
         // MARK: Start the bot here
         // TODO: Bot initialization and work xd, except idk what I'm doing now gg
-        let bot = TrackerBot(token: dec(config.token, withPassword: config.hash), prefix: config.prefix)
+        var tokk: String
+        if config.hash != "" {
+            tokk = dec(config.token, withPassword: config.hash)
+        } else {
+            tokk = config.token
+        }
+        
+        let bot = TrackerBot(token: tokk, prefix: config.prefix)
         bot.start()
         dispatchMain()
     }
