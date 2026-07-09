@@ -55,23 +55,25 @@ extension TrackerBot {
         let selected: Presence = self.presences.randomElement() ?? Presence()
         if selected.enabled == false { return }
         
-        let largeImage = selected.large_image
-        let smallImage = selected.small_image
+        // let largeImage = selected.large_image
+        // let smallImage = selected.small_image
         let mode = DiscordActivityType(rawValue: selected.type)
         var activity = DiscordActivity(name: selected.name, type: mode)
-        activity.assets = DiscordActivityAssets.make(largeImage: largeImage.key, largeText: largeImage.description, smallImage: smallImage.key, smallText: smallImage.description)
-        activity.details = selected.details
-        activity.state = selected.state
+        // activity.assets = DiscordActivityAssets.make(largeImage: largeImage.key, largeText: largeImage.description, smallImage: smallImage.key, smallText: smallImage.description)
+        // activity.details = selected.details
+        // activity.state = selected.state
         
-        var start: Int? {
-            if selected.start == 0 { return Int(self.initTime) } else { return Int(self.initTime + selected.start) }
-        } // ts is funny i jst realized i dont need it
-        activity.timestamps = DiscordActivityTimestamps.make(start: start, end: Int(self.initTime + selected.end))
+        // var start: Int? {
+        //     if selected.start == 0 { return Int(self.initTime) } else { return Int(self.initTime + selected.start) }
+        // } // ts is funny i jst realized i dont need it
+        // activity.timestamps = DiscordActivityTimestamps.make(start: start, end: Int(self.initTime + selected.end))
         
-        activity.party = DiscordParty.make(id: "NotSwiftified_", sizes: [selected.party.current, selected.party.max])
+        // activity.party = DiscordParty.make(id: "NotSwiftified_", sizes: [selected.party.current, selected.party.max])
         
-        var presence = DiscordPresenceUpdate(activities: [activity], status: .idle, afkSince: Date(timeIntervalSince1970: TimeInterval(integerLiteral: initTime)))
+        let presence = DiscordPresenceUpdate(activities: [activity], status: .idle, afkSince: Date(timeIntervalSince1970: TimeInterval(integerLiteral: initTime)))
         
-        bot.setPresence(presence)
+        for shard in bot.shardManager.shards {
+            shard.sendPayload(.presenceUpdate(presence))
+        }
     }
 }

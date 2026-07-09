@@ -15,4 +15,8 @@ extension TrackerBot {
             // TODO: DO THIS LATER
         }
     }
+    
+    func client(_ client: DiscordClient, didCreateInteraction interaction: DiscordInteraction) {
+        // basically command handling...?
+    }
 }

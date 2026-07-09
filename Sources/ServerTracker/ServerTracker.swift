@@ -64,59 +64,70 @@ struct ServerTracker: ParsableCommand {
                 // ask for pres details here
                 // this code is leaked to viewers and early access but the codebase is public
                 // build it yourself to see development progress i guess lmfao
+                print("------ PRESENCE TYPE ------")
+                print("Types, which will show cosmetically on Discord")
+                print("Playing: 0")
+                print("Streaming: 1")
+                print("Listening: 2")
+                print("Watching: 3")
+                let type_string: String = input("Presence type (default game):")
+                let type: Int = Int(type_string) ?? 0
+                
                 let title: String = input("Title of the presence:")
                 
-                let details: String = input("Description of the presence:")
+                // let details: String = input("Description of the presence:")
                 
-                let state: String = input("Second line of the description:")
+                // let state: String = input("Second line of the description:")
                 
-                print("--- Image setup ---")
-                var key = input("Big image key:")
-                var desc = input("Big image description:")
-                let bigImage: Image = Image(key: key, description: desc)
+                // print("--- Image setup ---")
+                // var key = input("Big image key:")
+                // var desc = input("Big image description:")
+                // let bigImage: Image = Image(key: key, description: desc)
                 
-                key = input("Small image key:")
-                desc = input("Small image description:")
-                let smallImage: Image = Image(key: key, description: desc)
+                // key = input("Small image key:")
+                // desc = input("Small image description:")
+                // let smallImage: Image = Image(key: key, description: desc)
                 
-                print("--- Misc setup ---")
-                let start: String = input("Start time in seconds (will be added to runtime):")
-                let start_int: Int64 = Int64(start) ?? 0
+                // print("--- Misc setup ---")
+                // let start: String = input("Start time in seconds (will be added to runtime):")
+                // let start_int: Int64 = Int64(start) ?? 0
                 
-                let end: String = input("End time in seconds (will also be added to runtime):")
-                let end_int: Int64 = Int64(end) ?? 0
+                // let end: String = input("End time in seconds (will also be added to runtime):")
+                // let end_int: Int64 = Int64(end) ?? 0
                 
-                let current = input("Team size (0 to disable)")
-                let max = input("Team size (0 to disable too)")
-                let party: Party = Party(current: Int(current) ?? 0, max: Int(max) ?? 0)
+                // let current = input("Team size (0 to disable)")
+                // let max = input("Team size (0 to disable too)")
+                // let party: Party = Party(current: Int(current) ?? 0, max: Int(max) ?? 0)
                 
                 print("--- All set! ---")
                 // summary here, ill brb for some sky pics xd
                 print("-- Summarized information of the presence you picked --")
+                print("Type: \(type)")
                 print("Title: \(title)")
-                print("Details: \(details)")
-                print("State: \(state)")
-                print("-= Big Image =-")
-                print("Key: \(bigImage.key)")
-                print("Description: \(bigImage.description)")
-                print("-= Small Image =-")
-                print("Key: \(smallImage.key)")
-                print("Description: \(smallImage.description)")
-                print("-= Miscellaneous =-")
-                print("Start time: \(start_int)")
-                print("End time: \(end_int)")
+                // print("Details: \(details)")
+                // print("State: \(state)")
+                // print("-= Big Image =-")
+                // print("Key: \(bigImage.key)")
+                // print("Description: \(bigImage.description)")
+                // print("-= Small Image =-")
+                // print("Key: \(smallImage.key)")
+                // print("Description: \(smallImage.description)")
+                // print("-= Miscellaneous =-")
+                // print("Start time: \(start_int)")
+                // print("End time: \(end_int)")
                 
                 let confirm = input("Is this correct?\nYou can always modify it to your likings in the config.json [yN]")
                 if confirm.lowercased().starts(with: "y") {
                     presList.append(Presence(enabled: true,
+                                             type: type,
                                              name: title,
-                                             details: details,
-                                             state: state,
-                                             large_image: bigImage,
-                                             small_image: smallImage,
-                                             start: start_int,
-                                             end: end_int,
-                                             party: party
+                                             // details: details,
+                                             // state: state,
+                                             // large_image: bigImage,
+                                             // small_image: smallImage,
+                                             // start: start_int,
+                                             // end: end_int,
+                                             // party: party
                                             )
                     ) // brb
                     print("Added to the queue to add later!")
@@ -146,7 +157,11 @@ struct ServerTracker: ParsableCommand {
             print("--- DEBUG INFOOOOO ---")
             print("PWD: \(file)")
             print("Wanted path: \(path)")
-            let encoder = try JSONEncoder().encode(config)
+            let enc = JSONEncoder()
+            
+            // yayyy pretty printingggg >:))))))))
+            enc.outputFormatting = [.prettyPrinted, .sortedKeys, .withoutEscapingSlashes]
+            let encoder = try enc.encode(config)
             try encoder.write(to: path, options: .atomic)
         } catch {
             print("Failed to write file: \(error.localizedDescription)")
@@ -192,7 +207,7 @@ struct ServerTracker: ParsableCommand {
             tokk = config.token
         }
         
-        let bot = TrackerBot(token: tokk, prefix: config.prefix)
+        let bot = TrackerBot(token: tokk, prefix: config.prefix, presences: config.presences)
         bot.start()
         dispatchMain()
     }

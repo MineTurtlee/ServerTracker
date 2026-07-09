@@ -12,25 +12,25 @@ struct Presence: Codable {
         case enabled
         case type
         case name
-        case details
-        case state
-        case large_image
-        case small_image
-        case start
-        case end
-        case party
+        // case details
+        // case state
+        //  case large_image
+        // case small_image
+        // case start
+        // case end
+        // case party
     }
     
     var enabled: Bool = false
     var type: Int = 0
     var name: String = ""
-    var details: String = ""
-    var state: String = ""
-    var large_image: Image = Image()
-    var small_image: Image = Image()
-    var start: Int64 = 0
-    var end: Int64 = 0
-    var party: Party = Party()
+    // var details: String = ""
+    // var state: String = ""
+    // var large_image: Image = Image()
+    // var small_image: Image = Image()
+    // var start: Int64 = 0
+    // var end: Int64 = 0
+    // var party: Party = Party()
 }
 
 struct Image: Codable {
