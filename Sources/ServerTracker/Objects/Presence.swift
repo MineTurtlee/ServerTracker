@@ -10,6 +10,7 @@ import Foundation
 struct Presence: Codable {
     enum CodingKeys: String, CodingKey {
         case enabled
+        case type
         case name
         case details
         case state
@@ -21,6 +22,7 @@ struct Presence: Codable {
     }
     
     var enabled: Bool = false
+    var type: Int = 0
     var name: String = ""
     var details: String = ""
     var state: String = ""
