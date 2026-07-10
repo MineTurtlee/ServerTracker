@@ -58,7 +58,7 @@ extension TrackerBot {
         // let largeImage = selected.large_image
         // let smallImage = selected.small_image
         let mode = DiscordActivityType(rawValue: selected.type)
-        var activity = DiscordActivity(name: selected.name, type: mode)
+        let activity = DiscordActivity(name: selected.name, type: mode)
         // activity.assets = DiscordActivityAssets.make(largeImage: largeImage.key, largeText: largeImage.description, smallImage: smallImage.key, smallText: smallImage.description)
         // activity.details = selected.details
         // activity.state = selected.state

@@ -9,6 +9,8 @@ import Foundation
 @preconcurrency import Discord
 
 final class Ping: Command {
+    let choices: [String : ChoiceValue] = [:]
+    
     let subcommands: [any Subcommand] = []
     
     let name: String = "ping"
@@ -16,6 +18,8 @@ final class Ping: Command {
     let args: [Discord.DiscordApplicationCommandOption] = []
     let cog: Cog
     let client: DiscordClient
+    
+    
     
     init(cog: Cog) {
         self.cog = cog
@@ -29,7 +33,7 @@ final class Ping: Command {
         client.editMessage(interaction.message!.id, on: interaction.channelId, edit: .init(content: "Pong!"))
     }
     
-    func invoke(_ name: Any) {
-        <#code#>
+    func invoke(withContext ctx: DiscordChannel) {
+        
     }
 }

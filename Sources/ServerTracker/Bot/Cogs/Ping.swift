@@ -16,10 +16,10 @@ actor PingPong: Cog {
     
     init(_ bot: DiscordClient) {
         self.bot = bot
-        commands.append(Ping(cog: self))
     }
     
     func cog_load() async {
+        commands.append(Ping(cog: self))
         print("This cog was loaded")
     }
 }
