@@ -11,6 +11,7 @@ import Discord
 // I keep vibecoding
 protocol Cog: Actor { // xd it couldve been an actress (what a horrible joke!)
     nonisolated var bot: DiscordClient! { get }
+    var commands: [Command] { get set }
     
     init(_ bot: DiscordClient)
     

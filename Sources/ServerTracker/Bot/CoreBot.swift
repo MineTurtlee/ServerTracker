@@ -10,7 +10,7 @@ import Foundation
 import Dispatch
 
 class TrackerBot: DiscordClientDelegate {
-    private var bot: DiscordClient!
+    internal var bot: DiscordClient!
     var prefix: String
     var presences: [Presence]
     var initTime: Int64

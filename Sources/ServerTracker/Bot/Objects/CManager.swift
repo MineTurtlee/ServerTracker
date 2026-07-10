@@ -23,4 +23,8 @@ actor CogManager {
             await cogObj.cog_load()
         }
     }
+    
+    func allCogs() -> [Cog] {
+        Array(cogs.values)
+    }
 }

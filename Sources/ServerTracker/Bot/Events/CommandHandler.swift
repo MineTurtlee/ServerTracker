@@ -17,6 +17,6 @@ extension TrackerBot {
     }
     
     func client(_ client: DiscordClient, didCreateInteraction interaction: DiscordInteraction) {
-        // basically command handling...?
+        var command = interaction.data?.name?.split(separator: " ")
     }
 }

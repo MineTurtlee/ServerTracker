@@ -9,9 +9,17 @@ import Foundation
 @preconcurrency import Discord
 
 extension TrackerBot {
+    static let allCogs: [Cog.Type] = [
+        PingPong.self
+    ]
+    
     func loadCogs() {
+        let manager = cogManager
+        let cogs = Self.allCogs
         Task {
-            await cogManager?.load(cog: <#T##any Cog.Type#>)
+            for cog in cogs {
+                await manager?.load(cog: cog)
+            }
         }
     }
 }
